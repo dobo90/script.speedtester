@@ -717,7 +717,7 @@ class DG_Speed_Test(xbmcgui.WindowXMLDialog):
 		self.addControl(self.rec_speed)
 		self.rec_speed.setVisible(False)
 		self.rec_speed.setEnabled(False)
-		self.rec_speed.setText("".join("[B]Recomenended Speeds for Streaming! \n3 to 5 Mb/s for viewing standard definition 480p video \n5 to 10 Mb/s for viewing high-def 720p video \n10+ Mb/s or more for the best  1080p experience \n10+ Mb/s for the best Live TV Streaming experience \n25 to 50+ Mb/s 4K streaming \nAll Speeds are based on the device not what speed you pay for![/B]"))
+		self.rec_speed.setText("[B]Recommended speeds for streaming:[/B]\n- 3 to 5 Mb/s for viewing SD-quality 480p video\n- 5 to 10 Mb/s for viewing HD-quality 720p video\n- 10+ Mb/s for the best 1080p or Live TV experience\n- 25 to 50+ Mb/s for 4K streaming\n[I]Reported speeds may be due to the limitations of the device.[/I]")
 		self.rec_speed.setAnimations([
 			('conditional',
 			'effect=fade start=0 end=100 time=1000 delay=100 condition=Control.IsVisible(%d)' % self.rec_speed.getId()),
