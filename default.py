@@ -717,7 +717,7 @@ class DG_Speed_Test(xbmcgui.WindowXMLDialog):
 		self.addControl(self.rec_speed)
 		self.rec_speed.setVisible(False)
 		self.rec_speed.setEnabled(False)
-		self.rec_speed.setText("[B]Recomended speeds for streaming:[/B]\n- 3 to 5 Mb/s for viewing SD-quality 480p video\n- 5 to 10 Mb/s for viewing HD-quality 720p video\n- 10+ Mb/s for the best 1080p or Live TV experience\n- 25 to 50+ Mb/s for 4K streaming\n[I]Reported speeds may be due to the limitations of the device.[/I]")
+		self.rec_speed.setText("[B]Recommended download speed for video streaming:[/B]\n- 3 to 5 Mbit/s for viewing SD-quality 480p video\n- 5 to 10 Mbit/s for viewing HD-quality 720p video\n- 10+ Mbit/s for the best 1080p or Live TV experience\n- 25 to 50+ Mbit/s for 4K streaming\n[I]Reported speeds may be due to the limitations of the device.[/I]")
 		self.rec_speed.setAnimations([
 			('conditional',
 			'effect=fade start=0 end=100 time=1000 delay=100 condition=Control.IsVisible(%d)' % self.rec_speed.getId()),
@@ -822,7 +822,7 @@ class DG_Speed_Test(xbmcgui.WindowXMLDialog):
 				finished.append(sum(thread.result))
 				speedF = ((sum(finished) / (timeit.default_timer() - start)) / 1000 / 1000) * 8
 				speed_dl = self.configGauge(speedF, speed_dl)
-				self.dlul_prog_textbox.setLabel('%.02f Mbps ' % speedF)
+				self.dlul_prog_textbox.setLabel('%.02f Mbit/s ' % speedF)
 				del thread
 
 		q = Queue(6)
@@ -859,7 +859,7 @@ class DG_Speed_Test(xbmcgui.WindowXMLDialog):
 				finished.append(thread.result)
 				speedF = ((sum(finished) / (timeit.default_timer() - start)) / 1000 / 1000) * 8
 				speed_dl = self.configGauge(speedF, speed_dl)
-				self.dlul_prog_textbox.setLabel('%.02f Mbps ' % speedF)
+				self.dlul_prog_textbox.setLabel('%.02f Mbit/s ' % speedF)
 				del thread
 
 		q = Queue(6)
