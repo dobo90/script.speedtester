@@ -54,7 +54,7 @@ jobs:
       uses: dagwieers/sonarcloud-github-action@more-options
       with:
         organization: add-ons
-        projectKey: add-ons_plugin.video.vrt.nu
+        projectKey: add-ons_speedtester
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

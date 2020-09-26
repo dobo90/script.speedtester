@@ -5,7 +5,7 @@ on:
     - 'v*'
 jobs:
   build:
-    name: Release plugin.video.vrt.nu
+    name: Release script.speedtester
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,11 +17,11 @@ jobs:
       - name: Get Leia filename
         id: get-leia-filename
         run: |
-          echo ::set-output name=leia-filename::$(cd ..;ls plugin.video.vrt.nu*.zip | grep -v '+matrix.' | head -1)
+          echo ::set-output name=leia-filename::$(cd ..;ls script.speedtester*.zip | grep -v '+matrix.' | head -1)
       - name: Get Matrix filename
         id: get-matrix-filename
         run: |
-          echo ::set-output name=matrix-filename::$(cd ..;ls plugin.video.vrt.nu*+matrix.*.zip | head -1)
+          echo ::set-output name=matrix-filename::$(cd ..;ls script.speedtester*+matrix.*.zip | head -1)
       - name: Get body
         id: get-body
         run: |
