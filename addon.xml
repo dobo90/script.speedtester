@@ -28,7 +28,7 @@ v1.0.1 (2019-08-06)
     </news>
     <assets>
       <icon>resources/media/icon.png</icon>
-      <fanart>resources/media/fanart.png</fanart>
+      <fanart>resources/media/fanart.jpg</fanart>
     </assets>
     <reuselanguageinvoker>true</reuselanguageinvoker>
   </extension>

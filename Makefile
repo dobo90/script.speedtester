@@ -49,7 +49,6 @@ check-translations:
 
 check-addon: clean
 	@echo -e "$(white)=$(blue) Starting sanity addon tests$(reset)"
-	kodi-addon-checker . --branch=krypton
 	kodi-addon-checker . --branch=leia
 
 unit: test-unit
