@@ -1,7 +1,7 @@
 [![GitHub release](https://img.shields.io/github/release/add-ons/script.speedtester.svg)](https://github.com/add-ons/script.speedtester/releases)
 [![Build status](https://github.com/add-ons/script.speedtester/workflows/CI/badge.svg)](https://github.com/add-ons/script.speedtester/actions)
 [![Codecov status](https://img.shields.io/codecov/c/github/add-ons/script.speedtester/master)](https://codecov.io/gh/add-ons/script.speedtester/branch/master)
-[![License: Apache-2.0](https://img.shields.io/badge/License-Apache-2-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache2-yellow.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Contributors](https://img.shields.io/github/contributors/add-ons/script.speedtester.svg)](https://github.com/add-ons/script.speedtester/graphs/contributors)
 
 # Kodi Speedtester add-on
