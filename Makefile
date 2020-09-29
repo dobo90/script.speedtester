@@ -1,4 +1,4 @@
-export PYTHONPATH := $(CURDIR)/tests
+export PYTHONPATH := $(CURDIR)/resources/lib:$(CURDIR)/tests
 PYTHON := python
 KODI_PYTHON_ABIS := 3.0.0 2.25.0
 
@@ -14,7 +14,7 @@ else
 	zip_name = $(name)-$(version)-$(git_branch)-$(git_hash).zip
 endif
 
-include_files = addon.xml default.py LICENSE README.md resources/
+include_files = addon.xml LICENSE README.md resources/
 include_paths = $(patsubst %,$(name)/%,$(include_files))
 exclude_files = \*.new \*.orig \*.pyc \*.pyo
 zip_dir = $(name)/
@@ -39,7 +39,7 @@ check-tox:
 
 check-pylint:
 	@echo -e "$(white)=$(blue) Starting sanity pylint test$(reset)"
-	$(PYTHON) -m pylint default.py
+	$(PYTHON) -m pylint resources/lib/ tests/
 
 check-translations:
 	@echo -e "$(white)=$(blue) Starting language test$(reset)"
