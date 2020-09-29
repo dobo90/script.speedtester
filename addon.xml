@@ -28,7 +28,9 @@ v1.0.1 (2019-08-06)
     </news>
     <assets>
       <icon>resources/media/icon.png</icon>
-      <fanart>resources/media/fanart.jpg</fanart>
+      <screenshot>resources/media/screenshot01.jpg</screenshot>
+      <screenshot>resources/media/screenshot02.jpg</screenshot>
+      <screenshot>resources/media/screenshot03.jpg</screenshot>
     </assets>
     <reuselanguageinvoker>true</reuselanguageinvoker>
   </extension>
