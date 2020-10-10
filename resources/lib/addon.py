@@ -15,7 +15,7 @@
 
 from __future__ import absolute_import, division, unicode_literals
 
-import os
+import os.path
 import sys
 import math
 import platform
@@ -57,13 +57,18 @@ except ImportError:
         from urllib.parse import urlparse
         from urllib2 import urlopen, Request, HTTPError, URLError
 
-from xbmc import Monitor, translatePath
+from xbmc import Monitor
 from xbmcgui import ControlButton, ControlImage, ControlLabel, ControlTextBox, WindowXMLDialog
+
+try:  # Kodi v19 or newer
+    from xbmcvfs import translatePath
+except ImportError:  # Kodi v18 and older
+    # pylint: disable=ungrouped-imports
+    from xbmc import translatePath
 
 from kodiutils import addon_path, localize, log
 
 
-ART = translatePath(os.path.join(addon_path(), 'resources', 'skins', 'Default', 'media'))
 IMAGE_RESULT = None
 SOURCE = None
 SHUTDOWN_EVENT = None
@@ -329,7 +334,7 @@ class SpeedTest(Animation):
         self.button_run_id = None
         self.dl_textbox = None
         self.dlul_prog_textbox = None
-        self.image_dir = None
+        self.image_dir = translatePath(os.path.join(addon_path(), 'resources', 'skins', 'Default', 'media'))
         self.image_background = None
         self.image_shadow = None
         self.image_progress = None
@@ -368,18 +373,17 @@ class SpeedTest(Animation):
         self.screenx = 1920
         self.screeny = 1080
 
-        self.image_dir = ART
-        self.image_background = self.image_dir + '/bg_screen.jpg'
-        self.image_shadow = self.image_dir + '/shadowframe.png'
-        self.image_progress = self.image_dir + '/ajax-loader-bar.gif'
-        self.image_ping = self.image_dir + '/ping_progress_bg.png'
-        self.image_ping_glow = self.image_dir + '/ping_progress_glow.png'
-        self.image_gauge = self.image_dir + '/gauge_bg.png'
-        self.image_gauge_arrow = self.image_dir + '/gauge_ic_arrow.png'
-        self.image_button_run = self.image_dir + '/btn_start_bg.png'
-        self.image_button_run_glow = self.image_dir + '/btn_start_glow_active.png'
-        self.image_speedtestresults = self.image_dir + '/speedtest_results_wtext.png'
-        self.image_centertext_testingping = self.image_dir + '/testing_ping.png'
+        self.image_background = os.path.join(self.image_dir, 'bg_screen.jpg')
+        self.image_shadow = os.path.join(self.image_dir, 'shadowframe.png')
+        self.image_progress = os.path.join(self.image_dir, 'ajax-loader-bar.gif')
+        self.image_ping = os.path.join(self.image_dir, 'ping_progress_bg.png')
+        self.image_ping_glow = os.path.join(self.image_dir, 'ping_progress_glow.png')
+        self.image_gauge = os.path.join(self.image_dir, 'gauge_bg.png')
+        self.image_gauge_arrow = os.path.join(self.image_dir, 'gauge_ic_arrow.png')
+        self.image_button_run = os.path.join(self.image_dir, 'btn_start_bg.png')
+        self.image_button_run_glow = os.path.join(self.image_dir, 'btn_start_glow_active.png')
+        self.image_speedtestresults = os.path.join(self.image_dir, 'speedtest_results_wtext.png')
+        self.image_centertext_testingping = os.path.join(self.image_dir, 'testing_ping.png')
         self.image_result = self.image_speedtestresults
         self.textbox = ControlTextBox(50, 50, 880, 500, textColor='0xFFFFFFFF')
         self.addControl(self.textbox)
