@@ -6,7 +6,6 @@ from __future__ import absolute_import, division, unicode_literals
 
 import xbmc
 import xbmcaddon
-from utils import from_unicode, to_unicode
 
 ADDON = xbmcaddon.Addon()
 
@@ -16,6 +15,21 @@ class SafeDict(dict):
     def __missing__(self, key):
         """Replace missing keys with the original placeholder"""
         return '{' + key + '}'
+
+
+def to_unicode(text, encoding='utf-8', errors='strict'):
+    """Force text to unicode"""
+    if isinstance(text, bytes):
+        return text.decode(encoding, errors=errors)
+    return text
+
+
+def from_unicode(text, encoding='utf-8', errors='strict'):
+    """Force unicode to text"""
+    import sys
+    if sys.version_info.major == 2 and isinstance(text, unicode):  # noqa: F821; pylint: disable=undefined-variable
+        return text.encode(encoding, errors)
+    return text
 
 
 def addon_path():
