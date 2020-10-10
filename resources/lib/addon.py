@@ -57,23 +57,13 @@ except ImportError:
         from urllib.parse import urlparse
         from urllib2 import urlopen, Request, HTTPError, URLError
 
-from xbmc import log, LOGNOTICE, Monitor
-from xbmcaddon import Addon
+from xbmc import Monitor, translatePath
 from xbmcgui import ControlButton, ControlImage, ControlLabel, ControlTextBox, WindowXMLDialog
 
-try:  # Kodi v19 or newer
-    from xbmcvfs import translatePath
-except ImportError:  # Kodi v18 and older
-    # pylint: disable=ungrouped-imports
-    from xbmc import translatePath
+from kodiutils import addon_path, localize, log
 
 
-ADDON = Addon()
-ADDONID = ADDON.getAddonInfo('id')
-ADDONNAME = ADDON.getAddonInfo('name')
-ADDONVERSION = ADDON.getAddonInfo('version')
-ART = translatePath(os.path.join(ADDON.getAddonInfo('path'), 'resources', 'skins', 'Default', 'media'))
-
+ART = translatePath(os.path.join(addon_path(), 'resources', 'skins', 'Default', 'media'))
 IMAGE_RESULT = None
 SOURCE = None
 SHUTDOWN_EVENT = None
@@ -181,7 +171,7 @@ def get_config():
     request = build_request('http://www.speedtest.net/speedtest-config.php')
     handler = catch_request(request)
     if handler is False:
-        log('Could not retrieve speedtest.net configuration', LOGNOTICE)
+        log(0, 'Could not retrieve speedtest.net configuration')
         sys.exit(1)
     configxml = []
     while True:
@@ -195,8 +185,8 @@ def get_config():
         try:
             root = minidom.parseString(''.join(configxml))
         except SyntaxError as exc:
-            log('CONFIG XML:\n%s' % ''.join(configxml), LOGNOTICE)
-            log('Failed to parse speedtest.net configuration: %s' % exc, LOGNOTICE)
+            log(0, 'CONFIG XML:\n{config}', config=''.join(configxml))
+            log(0, 'Failed to parse speedtest.net configuration: {error}', error=exc)
             raise
         config = dict(
             client=get_attributes_by_tag_name(root, 'client'),
@@ -208,8 +198,8 @@ def get_config():
         try:
             root = ElementTree.fromstring(''.encode().join(configxml))
         except SyntaxError as exc:
-            log('CONFIG XML:\n%s' % ''.encode().join(configxml), LOGNOTICE)
-            log('Failed to parse speedtest.net configuration: %s' % exc, LOGNOTICE)
+            log(0, 'CONFIG XML:\n{config}', config=''.encode().join(configxml))
+            log(0, 'Failed to parse speedtest.net configuration: {error}', error=exc)
             raise
         config = dict(
             client=root.find('client').attrib,
@@ -274,7 +264,7 @@ def closest_servers(client, total=False):
         if servers:
             break
     if not servers:
-        log('Failed to retrieve list of speedtest.net servers:%s' % '\n'.join(errors), LOGNOTICE)
+        log(0, 'Failed to retrieve list of speedtest.net servers: {errors}', errors='\n'.join(errors))
         sys.exit(1)
     closest = []
     for ddd in sorted(servers.keys()):
@@ -414,7 +404,7 @@ class SpeedTest(Animation):
                 ('conditional', 'effect=fade start=0 time=1000 condition=true pulse=true')
             ])
 
-            self.button_run = ControlButton(button_run_glowx, button_run_glowy, 300, 122, "[B]Run Speedtest[/B]",
+            self.button_run = ControlButton(button_run_glowx, button_run_glowy, 300, 122, localize(30950),
                                             focusTexture=self.image_button_run, noFocusTexture=self.image_button_run,
                                             alignment=2 | 4, textColor='0xFF000000', focusedColor='0xFF000000',
                                             shadowColor='0xFFCCCCCC', disabledColor='0xFF000000')
@@ -448,7 +438,7 @@ class SpeedTest(Animation):
                 'effect=fade start=0 time=1000 delay=2000 pulse=true condition=Control.IsVisible(%d)' % self.button_close_glow.getId()
             )])
 
-            self.button_close = ControlButton(99999, 99999, 300, 122, "[B]Close[/B]",
+            self.button_close = ControlButton(99999, 99999, 300, 122, localize(30951),
                                               focusTexture=self.image_button_run, noFocusTexture=self.image_button_run,
                                               alignment=2 | 4, textColor='0xFF000000', focusedColor='0xFF000000',
                                               shadowColor='0xFFCCCCCC', disabledColor='0xFF000000')
@@ -646,12 +636,7 @@ class SpeedTest(Animation):
         self.addControl(self.rec_speed)
         self.rec_speed.setVisible(False)
         self.rec_speed.setEnabled(False)
-        self.rec_speed.setText("[B]Recommended download speed for video streaming:[/B]\n"
-                               "- 3 to 5 Mbps for viewing SD-quality 480p video\n"
-                               "- 5 to 10 Mbps for viewing HD-quality 720p video\n"
-                               "- 10+ Mbps for the best 1080p or Live TV experience\n"
-                               "- 25 to 50+ Mbps for 4K streaming\n"
-                               "[I]Reported speeds may be due to the limitations of the device.[/I]")
+        self.rec_speed.setText('\n'.join([localize(30980), localize(30981), localize(30982), localize(30983), localize(30984), localize(30985)]))
         self.rec_speed.setAnimations([(
             'conditional',
             'effect=fade start=0 end=100 time=1000 delay=100 condition=Control.IsVisible(%d)' % self.rec_speed.getId()
@@ -806,7 +791,7 @@ class SpeedTest(Animation):
     def speedtest(self, share=False, simple=False, src=None, timeout=10):
         self.img_ping.setVisible(True)
         self.img_ping_glow.setVisible(True)
-        start_st = ['[B]Running Speed Test add-on[/B]']
+        start_st = [localize(30960)]  # Running Speed Test add-on
 
         global SHUTDOWN_EVENT, SOURCE  # pylint: disable=global-statement
         SHUTDOWN_EVENT = threading.Event()
@@ -817,37 +802,29 @@ class SpeedTest(Animation):
             SOURCE = src
             socket.socket = bound_socket
 
-        start_st.append('Retrieving speedtest.net configuration')
+        start_st.append(localize(30961))  # Retrieving speedtest.net configuration
         self.update_textbox(start_st)
         try:
             config = get_config()
         except URLError:
             return False
 
-        start_st.append('Retrieving speedtest.net server list')
+        start_st.append(localize(30962))  # Retrieving speedtest.net server list
         self.update_textbox(start_st)
         self.img_centertext.setImage(self.image_centertext_testingping)
 
         servers = closest_servers(config['client'])
 
-        start_st.append('Testing from %(isp)s (%(ip)s)' % config['client'])
+        start_st.append(localize(30963, **config['client']))  # Testing from ISP
         self.update_textbox(start_st)
 
         best = get_best_server(servers)
 
-        start_st.append('Selecting best server based on latency')
-        self.update_textbox(start_st)
-
-        start_st.append('Hosted by: %(sponsor)s' % best)
-        self.update_textbox(start_st)
-
-        start_st.append('Host Server: %(host)s' % best)
-        self.update_textbox(start_st)
-
-        start_st.append('City, State: %(name)s' % best)
-        self.update_textbox(start_st)
-
-        start_st.append('Country: %(country)s' % best)
+        start_st.append(localize(30964))  # Selecting best server based on latency
+        start_st.append(localize(30965, **best))  # Hosted by: {sponsor}
+        start_st.append(localize(30966, **best))  # 'Host server: {host}
+        start_st.append(localize(30967, **best))  # City, State: {name}
+        start_st.append(localize(30968, **best))  # Country: {country}
         self.update_textbox(start_st)
 
         # km2mi = 0.62
@@ -855,10 +832,8 @@ class SpeedTest(Animation):
         # Distance = float(km)
         # miles = Distance * km2mi
         # start_st.append('Distance: %s mi' % miles)
-        start_st.append('Distance: %(d)0.02f km' % best)
-        self.update_textbox(start_st)
-
-        start_st.append('Ping: %(latency)s ms' % best)
+        start_st.append(localize(30969, **best))  # Distance: {d}
+        start_st.append(localize(30970, **best))  # Ping: {latency}
         self.update_textbox(start_st)
         self.ping_textbox.setLabel("%.0f" % float(best['latency']))
 
@@ -876,10 +851,10 @@ class SpeedTest(Animation):
         self.config_gauge(0)
         self.img_gauge_arrow.setVisible(True)
 
-        start_st.append('Testing download speed...')
+        start_st.append(localize(30971))  # Testing download speed...
         self.update_textbox(start_st)
         dlspeed = self.download_speed(urls, simple)
-        start_st[-1] = 'Download speed: %0.2f Mbps' % (dlspeed * 8 / 1000 / 1000)
+        start_st[-1] = localize(30972, speed=dlspeed * 8 / 1000 / 1000)  # Download speed
         self.update_textbox(start_st)
         self.dl_textbox.setLabel('%0.2f' % float(dlspeed * 8 / 1000 / 1000))
 
@@ -889,10 +864,10 @@ class SpeedTest(Animation):
             for _ in range(0, 25):
                 sizes.append(size)
 
-        start_st.append('Testing upload speed...')
+        start_st.append(localize(30973))  # Testing upload speed...
         self.update_textbox(start_st)
         ulspeed = self.upload_speed(best['url'], sizes, simple)
-        start_st[-1] = 'Upload speed: %0.2f Mbps' % (ulspeed * 8 / 1000 / 1000)
+        start_st[-1] = localize(30974, speed=ulspeed * 8 / 1000 / 1000)  # Upload speed
         self.update_textbox(start_st)
         self.ul_textbox.setLabel('%.2f' % float(ulspeed * 8 / 1000 / 1000))
         self.config_gauge(0, ulspeed * 8 / 1000 / 1000, time=3000)
@@ -918,20 +893,20 @@ class SpeedTest(Animation):
             request = build_request('https://www.speedtest.net/api/api.php', data='&'.join(api_data).encode(), headers=headers)
             fdesc = catch_request(request)
             if fdesc is False:
-                log('Could not submit results to speedtest.net', LOGNOTICE)
+                log(0, 'Could not submit results to speedtest.net')
                 return False
             response = fdesc.read()
             code = fdesc.code
             fdesc.close()
 
             if int(code) != 200:
-                log('Could not submit results to speedtest.net', LOGNOTICE)
+                log(0, 'Could not submit results to speedtest.net')
                 return False
 
             qsargs = parse_qs(response.decode())  # pylint: disable=deprecated-method
             resultid = qsargs.get('resultid')
             if not resultid or len(resultid) != 1:
-                log('Could not submit results to speedtest.net', LOGNOTICE)
+                log(0, 'Could not submit results to speedtest.net')
                 return False
 
             global IMAGE_RESULT  # pylint: disable=global-statement
@@ -942,5 +917,5 @@ class SpeedTest(Animation):
 
 def run():
     """Addon entry point from wrapper"""
-    speedtest = SpeedTest('script-speedtester_main.xml', ADDON.getAddonInfo('path'), 'Default')
+    speedtest = SpeedTest('script-speedtester_main.xml', addon_path(), 'Default')
     del speedtest
