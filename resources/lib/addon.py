@@ -57,9 +57,16 @@ except ImportError:
         from urllib.parse import urlparse
         from urllib2 import urlopen, Request, HTTPError, URLError
 
-from xbmc import log, LOGNOTICE, Monitor, translatePath
+from xbmc import log, LOGNOTICE, Monitor
 from xbmcaddon import Addon
 from xbmcgui import ControlButton, ControlImage, ControlLabel, ControlTextBox, WindowXMLDialog
+
+try:  # Kodi v19 or newer
+    from xbmcvfs import translatePath
+except ImportError:  # Kodi v18 and older
+    # pylint: disable=ungrouped-imports
+    from xbmc import translatePath
+
 
 ADDON = Addon()
 ADDONID = ADDON.getAddonInfo('id')
