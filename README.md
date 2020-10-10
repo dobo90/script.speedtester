@@ -16,7 +16,10 @@ In Kodi, simply search the add-ons for `Speed` and install the Speedtester add-o
 
 ## Releases
 ### v1.1.1 (2020-10-10)
-- Add localization
+- Fix issues for Kodi repo review (@dagwieers)
+
+### v1.1.1 (2020-10-10)
+- Add localization (@dagwieers)
 
 ### v1.1.0 (2020-09-26)
 - Move add-on to Add-ons project (@dagwieers)
